@@ -5,11 +5,15 @@
 
 class Socket : IOBase
 {
+  Socket(int descriptor);
+
 private:
   Socket();
 
 public:
-  static IOBase *create();
+  ~Socket();
+  IOBase *waitForClient();
+  static Socket *create(short port);
 };
 
 #endif
