@@ -6,7 +6,7 @@
 
 int main(int argc, char **argv)
 {
-    Socket *socket = Socket::create(5000);
+    Socket *socket = Socket::create(DEFAULT_PORT);
     std::list<IOBase *> clients;
     while (1)
     {

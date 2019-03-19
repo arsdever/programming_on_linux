@@ -1,15 +1,18 @@
 COMPILER 	:= g++
-FLAGS 		:= -std=c++11 -Wall
+FLAGS 		:= -std=c++11 -Wall -g
 SOURCES 	:= $(shell ls *.cpp)
 OBJ_DIR		:= ./obj/
 OBJECTS 	:= $(SOURCES:%.cpp=$(OBJ_DIR)%.o)
-NAME 		:= app
 
 .PHONY : final build rebuild clean create_obj_dir
 
-final : create_obj_dir $(NAME)
+final : create_obj_dir client server
 
-$(NAME) : $(OBJECTS)
+client : $(filter-out $(OBJ_DIR)main.o,$(OBJECTS))
+	@echo Building $@
+	@$(COMPILER) $^ -o $@ $(FLAGS)
+
+server : $(filter-out $(OBJ_DIR)client.o,$(OBJECTS))
 	@echo Building $@
 	@$(COMPILER) $^ -o $@ $(FLAGS)
 
@@ -23,7 +26,7 @@ rebuild : clean build
 
 clean : 
 	@rm -fr $(OBJ_DIR)
-	@rm $(NAME)
+	@rm server client
 
 create_obj_dir : 
 	@mkdir -p $(OBJ_DIR)

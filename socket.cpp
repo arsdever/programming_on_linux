@@ -6,6 +6,7 @@
 #include <netinet/in.h>
 #include <string.h>
 #include <errno.h>
+#include <arpa/inet.h>
 
 Socket::Socket(int descriptor)
     : IOBase(descriptor)
@@ -57,4 +58,30 @@ IOBase *Socket::waitForClient()
     }
 
     return IOBase::create(client_descriptor);
+}
+
+IOBase *Socket::createClient(std::string const &ip, short port)
+{
+    int descriptor = socket(AF_INET, SOCK_STREAM, 0);
+    if (descriptor == -1)
+    {
+        throw IOBase::IOException();
+    }
+
+    sockaddr_in sockaddress;
+    memset(&sockaddress, 0, sizeof(sockaddr_in));
+
+    sockaddress.sin_family = AF_INET;
+    sockaddress.sin_port = htons(port);
+
+    inet_pton(sockaddress.sin_family, ip.c_str(), &sockaddress.sin_addr);
+
+    if (connect(descriptor, (const sockaddr *)&sockaddress, sizeof(sockaddr_in)))
+    {
+        std::cerr << "connect " << strerror(errno) << std::endl;
+        throw IOBase::IOException();
+    }
+    std::cout << "Connected to ip " << ip << " port " << port << std::endl;
+
+    return IOBase::create(descriptor);
 }
