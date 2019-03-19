@@ -1,13 +1,15 @@
 #include "socket.h"
 
-IOBase *Socket::create(std::string const &filename, int flags, int mode)
+#include <sys/types.h>
+#include <sys/socket.h>
+
+IOBase *Socket::create()
 {
-    /*int descriptor = open(filename.c_str(), flags, mode);
+    int descriptor = socket(AF_INET, SOCK_STREAM, 0);
     if (descriptor == -1)
     {
         throw IOBase::IOException();
     }
 
-    return IOBase::create(descriptor);*/
-    return nullptr;
+    return IOBase::create(descriptor);
 }
